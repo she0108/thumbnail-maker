@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 
 interface DraggabbleProps {
   image: File;
+  onDelete: () => void;
 }
 
-export default function Draggabble({ image }: DraggabbleProps) {
+export default function Draggabble({ image, onDelete }: DraggabbleProps) {
   const [{ x, y }, setPosition] = useState({ x: 0, y: 0 });
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
@@ -51,6 +52,7 @@ export default function Draggabble({ image }: DraggabbleProps) {
           className="w-full h-full object-cover select-none hover:cursor-pointer"
         />
       )}
+      <button onClick={onDelete}>X</button>
     </div>
   );
 }
