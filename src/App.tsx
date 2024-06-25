@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import "./App.css";
 import { Label } from "./components/ui/label";
 import {
@@ -10,18 +10,45 @@ import {
 } from "./components/ui/select";
 import { Slider } from "./components/ui/slider";
 import { Checkbox } from "./components/ui/checkbox";
+import * as htmlToImage from "html-to-image";
+import { SelectPortal } from "@radix-ui/react-select";
 
 function App() {
+  const imageRef = useRef<HTMLDivElement>(null);
+  const exportRef = useRef<HTMLAnchorElement>(null);
   const [isSubtitle, setIsSubtitle] = useState<boolean | "indeterminate">(true);
   const [titleSize, setTitleSize] = useState<number>(32);
   const [subtitleSize, setSubtitleSize] = useState<number>(24);
   const [titleColor, setTitleColor] = useState<string>("#000000");
   const [subtitleColor, setSubtitleColor] = useState<string>("#000000");
   const [bgColor, setBgColor] = useState<string>("#FFFFFF");
+  const [imageType, setImageType] = useState<string>("png");
+
+  const handleClickExport = async (imageType: string) => {
+    console.log(imageType);
+    if (imageRef.current && exportRef.current) {
+      let imageUrl;
+      switch (imageType) {
+        case "jpeg":
+          imageUrl = await htmlToImage.toJpeg(imageRef.current);
+          break;
+        case "svg":
+          imageUrl = await htmlToImage.toSvg(imageRef.current);
+          break;
+        case "png":
+        default:
+          imageUrl = await htmlToImage.toPng(imageRef.current);
+      }
+      exportRef.current.href = imageUrl;
+      exportRef.current.download = `thumbnail.${imageType}`;
+      exportRef.current.click();
+    }
+  };
 
   return (
     <div className="grid grid-cols-3 grid-rows-1 w-dvw h-screen border">
       <div
+        ref={imageRef}
         className="col-span-2 w-[640px] h-[360px] m-auto border flex flex-col justify-center items-center"
         style={{ backgroundColor: bgColor }}
       >
@@ -103,6 +130,23 @@ function App() {
             onChange={(e) => setBgColor(e.target.value)}
           />
         </div>
+        <Select
+          value={imageType}
+          onValueChange={(value) => setImageType(value)}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="select image type" />
+          </SelectTrigger>
+          <SelectPortal>
+            <SelectContent>
+              <SelectItem value="png">PNG</SelectItem>
+              <SelectItem value="jpeg">JPEG</SelectItem>
+              <SelectItem value="svg">SVG</SelectItem>
+            </SelectContent>
+          </SelectPortal>
+        </Select>
+        <button onClick={() => handleClickExport(imageType)}>Export</button>
+        <a ref={exportRef} hidden></a>
       </div>
     </div>
   );
