@@ -13,7 +13,7 @@ export default function TitleInput({
 }: TitleInputProps) {
   return (
     <input
-      className="w-full font-bold text-center focus:outline-none mb-2 bg-transparent"
+      className="w-full h-auto font-bold text-center focus:outline-none bg-transparent overflow-visible"
       placeholder={placeholder}
       style={{
         fontSize: `${size}px`,
