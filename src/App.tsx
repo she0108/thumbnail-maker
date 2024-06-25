@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import "./App.css";
+import "./font.css";
 import { Label } from "./components/ui/label";
 import {
   Select,
@@ -23,6 +23,7 @@ function App() {
   const [isSubtitle, setIsSubtitle] = useState<boolean | "indeterminate">(true);
   const [titleSize, setTitleSize] = useState<number>(32);
   const [subtitleSize, setSubtitleSize] = useState<number>(24);
+  const [titleFont, setTitleFont] = useState<string>("SBAggroB");
   const [titleColor, setTitleColor] = useState<string>("#000000");
   const [subtitleColor, setSubtitleColor] = useState<string>("#000000");
   const [bgColor, setBgColor] = useState<string>("#FFFFFF");
@@ -87,7 +88,11 @@ function App() {
         <input
           className="w-full font-bold text-center focus:outline-none mb-2 bg-transparent"
           placeholder="Title"
-          style={{ fontSize: `${titleSize}px`, color: titleColor }}
+          style={{
+            fontSize: `${titleSize}px`,
+            fontFamily: titleFont,
+            color: titleColor,
+          }}
         />
         {isSubtitle && (
           <input
@@ -113,10 +118,29 @@ function App() {
         </div>
         <div>
           <Label>font</Label>
-          <Select>
+          <Select value={titleFont} onValueChange={setTitleFont}>
             <SelectTrigger>
-              <SelectValue placeholder="sans serif" />
+              <SelectValue placeholder="어그로체" />
             </SelectTrigger>
+            <SelectPortal>
+              <SelectContent>
+                <SelectItem value="SBAggroB" style={{ fontFamily: "SBAggroB" }}>
+                  어그로체
+                </SelectItem>
+                <SelectItem
+                  value="yg-jalnan"
+                  style={{ fontFamily: "yg-jalnan" }}
+                >
+                  여기어때 잘난체
+                </SelectItem>
+                <SelectItem
+                  value="JalnanGothic"
+                  style={{ fontFamily: "JalnanGothic" }}
+                >
+                  여기어때 잘난체 고딕
+                </SelectItem>
+              </SelectContent>
+            </SelectPortal>
           </Select>
         </div>
         <div className="flex">
