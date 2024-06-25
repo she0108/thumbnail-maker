@@ -18,6 +18,7 @@ import { Input } from "./components/ui/input";
 
 function App() {
   const imageRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const exportRef = useRef<HTMLAnchorElement>(null);
   const [isSubtitle, setIsSubtitle] = useState<boolean | "indeterminate">(true);
   const [titleSize, setTitleSize] = useState<number>(32);
@@ -69,6 +70,7 @@ function App() {
       },
     ];
     setImages(newImages);
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const handleDeleteImage = (id: number) => {
@@ -163,7 +165,12 @@ function App() {
         </div>
         <div>
           <Label>image</Label>
-          <Input type="file" accept="image/*" onChange={handleSelectImage} />
+          <Input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onInput={handleSelectImage}
+          />
         </div>
         <Select
           value={imageType}
