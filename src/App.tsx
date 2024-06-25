@@ -17,6 +17,7 @@ import { Input } from "./components/ui/input";
 import SelectFont from "./components/SelectFont";
 import TitleInput from "./components/TitleInput";
 import Thumbnail from "./components/Thumbnail";
+import { ratioToSize } from "./lib/utils";
 
 function App() {
   const imageRef = useRef<HTMLDivElement>(null);
