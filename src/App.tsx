@@ -12,6 +12,9 @@ import { Slider } from "./components/ui/slider";
 import { Checkbox } from "./components/ui/checkbox";
 import * as htmlToImage from "html-to-image";
 import { SelectPortal } from "@radix-ui/react-select";
+import { Button } from "./components/ui/button";
+import Dragabble from "./components/Draggable";
+import Draggabble from "./components/Draggable";
 
 function App() {
   const imageRef = useRef<HTMLDivElement>(null);
@@ -24,7 +27,7 @@ function App() {
   const [bgColor, setBgColor] = useState<string>("#FFFFFF");
   const [imageType, setImageType] = useState<string>("png");
 
-  const handleClickExport = async (imageType: string) => {
+  const handleClickExport = async () => {
     console.log(imageType);
     if (imageRef.current && exportRef.current) {
       let imageUrl;
@@ -40,7 +43,7 @@ function App() {
           imageUrl = await htmlToImage.toPng(imageRef.current);
       }
       exportRef.current.href = imageUrl;
-      exportRef.current.download = `thumbnail.${imageType}`;
+      exportRef.current.download = `thumbnail${Date.now()}.${imageType}`;
       exportRef.current.click();
     }
   };
@@ -49,7 +52,7 @@ function App() {
     <div className="grid grid-cols-3 grid-rows-1 w-dvw h-screen border">
       <div
         ref={imageRef}
-        className="col-span-2 w-[640px] h-[360px] m-auto border flex flex-col justify-center items-center"
+        className="col-span-2 w-[640px] h-[360px] m-auto border flex flex-col justify-center items-center overflow-hidden relative"
         style={{ backgroundColor: bgColor }}
       >
         <input
@@ -64,6 +67,7 @@ function App() {
             style={{ fontSize: `${subtitleSize}px`, color: subtitleColor }}
           />
         )}
+        <Draggabble />
       </div>
       <div className="m-16 p-10 border-2 border-neutral-200 rounded-xl bg-neutral-200/40">
         <h3 className="text-lg font-semibold">Title</h3>
@@ -145,7 +149,7 @@ function App() {
             </SelectContent>
           </SelectPortal>
         </Select>
-        <button onClick={() => handleClickExport(imageType)}>Export</button>
+        <Button onClick={handleClickExport}>Export</Button>
         <a ref={exportRef} hidden></a>
       </div>
     </div>
