@@ -27,11 +27,11 @@ function App() {
   const [isSubtitle, setIsSubtitle] = useState<boolean | "indeterminate">(true);
 
   const [titleSize, setTitleSize] = useState<number>(64);
-  const [titleFont, setTitleFont] = useState<string>("SBAggroB");
+  const [titleFont, setTitleFont] = useState<string>("Pretendard-Black");
   const [titleColor, setTitleColor] = useState<string>("#000000");
 
   const [subtitleSize, setSubtitleSize] = useState<number>(32);
-  const [subtitleFont, setSubtitleFont] = useState<string>("SBAggroB");
+  const [subtitleFont, setSubtitleFont] = useState<string>("Pretendard-Bold");
   const [subtitleColor, setSubtitleColor] = useState<string>("#000000");
 
   const [bgColor, setBgColor] = useState<string>("#FFFFFF");
