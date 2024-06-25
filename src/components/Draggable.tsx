@@ -1,10 +1,24 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-export default function Draggabble() {
+interface DraggabbleProps {
+  image: File;
+}
+
+export default function Draggabble({ image }: DraggabbleProps) {
   const [{ x, y }, setPosition] = useState({ x: 0, y: 0 });
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
 
-  // add mousemove & mouseup event handler when mousedown event occurs
-  // Q: React.MouseEvent와 MouseEvent의 차이?
+  useEffect(() => {
+    if (image) {
+      const url = URL.createObjectURL(image);
+      setImageUrl(url);
+
+      return () => {
+        URL.revokeObjectURL(url);
+      };
+    }
+  }, [image]);
+
   const handleMouseDown = (clickEvent: React.MouseEvent) => {
     const handleMouseMove = (moveEvent: MouseEvent) => {
       setPosition({
@@ -29,11 +43,14 @@ export default function Draggabble() {
       }}
       className="absolute"
     >
-      <div className="w-32 h-32 bg-white hover:cursor-pointer shadow-lg">
-        <h1 className="text-black select-none text-center">
-          x: {x}, y: {y}
-        </h1>
-      </div>
+      {imageUrl && (
+        <img
+          src={imageUrl}
+          alt="image"
+          draggable="false"
+          className="w-full h-full object-cover select-none hover:cursor-pointer"
+        />
+      )}
     </div>
   );
 }

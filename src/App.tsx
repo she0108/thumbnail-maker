@@ -13,8 +13,8 @@ import { Checkbox } from "./components/ui/checkbox";
 import * as htmlToImage from "html-to-image";
 import { SelectPortal } from "@radix-ui/react-select";
 import { Button } from "./components/ui/button";
-import Dragabble from "./components/Draggable";
 import Draggabble from "./components/Draggable";
+import { Input } from "./components/ui/input";
 
 function App() {
   const imageRef = useRef<HTMLDivElement>(null);
@@ -25,6 +25,7 @@ function App() {
   const [titleColor, setTitleColor] = useState<string>("#000000");
   const [subtitleColor, setSubtitleColor] = useState<string>("#000000");
   const [bgColor, setBgColor] = useState<string>("#FFFFFF");
+  const [images, setImages] = useState<React.ReactElement[]>([]);
   const [imageType, setImageType] = useState<string>("png");
 
   const handleClickExport = async () => {
@@ -48,6 +49,13 @@ function App() {
     }
   };
 
+  const handleSelectImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+    const newFile = e.target.files[0];
+    const newImages = [...images, <Draggabble image={newFile} />];
+    setImages(newImages);
+  };
+
   return (
     <div className="grid grid-cols-3 grid-rows-1 w-dvw h-screen border">
       <div
@@ -67,7 +75,7 @@ function App() {
             style={{ fontSize: `${subtitleSize}px`, color: subtitleColor }}
           />
         )}
-        <Draggabble />
+        {images}
       </div>
       <div className="m-16 p-10 border-2 border-neutral-200 rounded-xl bg-neutral-200/40">
         <h3 className="text-lg font-semibold">Title</h3>
@@ -133,6 +141,10 @@ function App() {
             value={bgColor}
             onChange={(e) => setBgColor(e.target.value)}
           />
+        </div>
+        <div>
+          <Label>image</Label>
+          <Input type="file" accept="image/*" onChange={handleSelectImage} />
         </div>
         <Select
           value={imageType}
