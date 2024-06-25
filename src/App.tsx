@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
 import "./font.css";
-import { Label } from "./components/ui/label";
 import {
   Select,
   SelectContent,
@@ -17,6 +16,7 @@ import Draggable from "./components/Draggable";
 import { Input } from "./components/ui/input";
 import SelectFont from "./components/SelectFont";
 import TitleInput from "./components/TitleInput";
+import Thumbnail from "./components/Thumbnail";
 
 function App() {
   const imageRef = useRef<HTMLDivElement>(null);
@@ -25,11 +25,11 @@ function App() {
 
   const [isSubtitle, setIsSubtitle] = useState<boolean | "indeterminate">(true);
 
-  const [titleSize, setTitleSize] = useState<number>(32);
+  const [titleSize, setTitleSize] = useState<number>(64);
   const [titleFont, setTitleFont] = useState<string>("SBAggroB");
   const [titleColor, setTitleColor] = useState<string>("#000000");
 
-  const [subtitleSize, setSubtitleSize] = useState<number>(24);
+  const [subtitleSize, setSubtitleSize] = useState<number>(32);
   const [subtitleFont, setSubtitleFont] = useState<string>("SBAggroB");
   const [subtitleColor, setSubtitleColor] = useState<string>("#000000");
 
@@ -39,6 +39,7 @@ function App() {
   >([]);
 
   const [imageType, setImageType] = useState<string>("png");
+  const [imageRatio, setImageRatio] = useState<string>("16/9");
 
   const handleClickExport = async () => {
     console.log(imageType);
@@ -87,12 +88,8 @@ function App() {
   };
 
   return (
-    <div className="grid grid-cols-3 grid-rows-1 w-dvw h-screen border">
-      <div
-        ref={imageRef}
-        className="col-span-2 w-[640px] h-[360px] m-auto border flex flex-col justify-center items-center overflow-hidden relative"
-        style={{ backgroundColor: bgColor }}
-      >
+    <div className="grid grid-cols-3 grid-rows-1 divide-x-2 w-dvw h-dvh bg-neutral-100">
+      <Thumbnail ref={imageRef} bgColor={bgColor} ratio={imageRatio}>
         <TitleInput
           placeholder="Title"
           size={titleSize}
@@ -108,95 +105,114 @@ function App() {
           />
         )}
         {images.map((image) => image.element)}
-      </div>
-      <div className="m-16 p-10 border-2 border-neutral-200 rounded-xl bg-neutral-200/40">
-        <h3 className="text-lg font-semibold">Title</h3>
-        <div className="flex">
-          <Label>size</Label>
-          <Slider
-            value={[titleSize]}
-            onValueChange={(value) => setTitleSize(value[0])}
-            defaultValue={[24]}
-            max={64}
-            min={16}
-            step={1}
-          />
+      </Thumbnail>
+      <div className="p-10 bg-white flex flex-col">
+        <div className="flex flex-col gap-2 mb-8">
+          <h3 className="text-xl font-semibold">제목</h3>
+          <div className="flex flex-row items-center">
+            <label className="text-base font-medium w-16">크기</label>
+            <Slider
+              value={[titleSize]}
+              onValueChange={(value) => setTitleSize(value[0])}
+              max={128}
+              min={16}
+              step={1}
+            />
+          </div>
+          <div className="flex flex-row items-center">
+            <label className="text-base font-medium w-16">글꼴</label>
+            <SelectFont value={titleFont} onValueChange={setTitleFont} />
+          </div>
         </div>
-        <div>
-          <Label>font</Label>
-          <SelectFont value={titleFont} onValueChange={setTitleFont} />
+        <div className="flex flex-col gap-2 mb-8">
+          <div className="flex flex-row gap-2 items-center">
+            <h3 className="text-xl font-semibold">소제목</h3>
+            <Checkbox
+              defaultChecked={true}
+              checked={isSubtitle}
+              onCheckedChange={(value) => setIsSubtitle(value)}
+            />
+          </div>
+          <div className="flex flex-row items-center">
+            <label className="text-base font-medium w-16">크기</label>
+            <Slider
+              value={[subtitleSize]}
+              onValueChange={(value) => setSubtitleSize(value[0])}
+              max={128}
+              min={16}
+              step={1}
+            />
+          </div>
+          <div className="flex flex-row items-center">
+            <label className="text-base font-medium w-16">글꼴</label>
+            <SelectFont value={subtitleFont} onValueChange={setSubtitleFont} />
+          </div>
         </div>
-        <div className="flex">
-          <h3 className="text-lg font-semibold">Subtitle</h3>
-          <Checkbox
-            defaultChecked={true}
-            checked={isSubtitle}
-            onCheckedChange={(value) => setIsSubtitle(value)}
-          />
+        <div className="flex flex-col gap-2 mb-8">
+          <h3 className="text-xl font-semibold">색상</h3>
+          <div className="grid grid-cols-3 p-2 rounded bg-neutral-100">
+            <input
+              type="color"
+              value={titleColor}
+              onChange={(e) => setTitleColor(e.target.value)}
+              className="block w-full h-8 p-0 bg-inherit"
+            />
+            <input
+              type="color"
+              value={subtitleColor}
+              onChange={(e) => setSubtitleColor(e.target.value)}
+              className="block w-full h-8 p-0 bg-inherit"
+            />
+            <input
+              type="color"
+              value={bgColor}
+              onChange={(e) => setBgColor(e.target.value)}
+              className="block w-full h-8 p-0 bg-inherit"
+            />
+            <div className="text-center text-sm font-medium">제목</div>
+            <div className="text-center text-sm font-medium">소제목</div>
+            <div className="text-center text-sm font-medium">배경</div>
+          </div>
         </div>
-        <div className="flex">
-          <Label>size</Label>
-          <Slider
-            value={[subtitleSize]}
-            onValueChange={(value) => setSubtitleSize(value[0])}
-            defaultValue={[32]}
-            max={64}
-            min={16}
-            step={1}
-          />
-        </div>
-        <SelectFont value={subtitleFont} onValueChange={setSubtitleFont} />
-        <h3 className="text-lg font-semibold">Color</h3>
-        <div>
-          <Label>Title</Label>
-          <input
-            type="color"
-            value={titleColor}
-            onChange={(e) => setTitleColor(e.target.value)}
-          />
-        </div>
-        <div>
-          <Label>Subtitle</Label>
-          <input
-            type="color"
-            value={subtitleColor}
-            onChange={(e) => setSubtitleColor(e.target.value)}
-          />
-        </div>
-        <div>
-          <Label>Background</Label>
-          <input
-            type="color"
-            value={bgColor}
-            onChange={(e) => setBgColor(e.target.value)}
-          />
-        </div>
-        <div>
-          <Label>image</Label>
+        <div className="flex flex-col gap-2 mb-8">
+          <label className="text-xl font-semibold">이미지</label>
           <Input
             ref={fileInputRef}
             type="file"
             accept="image/*"
             onInput={handleSelectImage}
+            className="hover:cursor-pointer"
           />
         </div>
-        <Select
-          value={imageType}
-          onValueChange={(value) => setImageType(value)}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="select image type" />
-          </SelectTrigger>
-          <SelectPortal>
-            <SelectContent>
-              <SelectItem value="png">PNG</SelectItem>
-              <SelectItem value="jpeg">JPEG</SelectItem>
-              <SelectItem value="svg">SVG</SelectItem>
-            </SelectContent>
-          </SelectPortal>
-        </Select>
-        <Button onClick={handleClickExport}>Export</Button>
-        <a ref={exportRef} hidden></a>
+        <div className="flex flex-row gap-2 mt-auto">
+          <Select value={imageType} onValueChange={setImageType}>
+            <SelectTrigger>
+              <SelectValue placeholder="select image type" />
+            </SelectTrigger>
+            <SelectPortal>
+              <SelectContent>
+                <SelectItem value="png">PNG</SelectItem>
+                <SelectItem value="jpeg">JPEG</SelectItem>
+                <SelectItem value="svg">SVG</SelectItem>
+              </SelectContent>
+            </SelectPortal>
+          </Select>
+          <Select value={imageRatio} onValueChange={setImageRatio}>
+            <SelectTrigger>
+              <SelectValue placeholder="16 : 9" />
+            </SelectTrigger>
+            <SelectPortal>
+              <SelectContent>
+                <SelectItem value="16/9">16 : 9</SelectItem>
+                <SelectItem value="1/1">1 : 1</SelectItem>
+              </SelectContent>
+            </SelectPortal>
+          </Select>
+          <Button onClick={handleClickExport} className="ml-2">
+            저장
+          </Button>
+          <a ref={exportRef} hidden></a>
+        </div>
       </div>
     </div>
   );
