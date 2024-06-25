@@ -15,21 +15,29 @@ import { SelectPortal } from "@radix-ui/react-select";
 import { Button } from "./components/ui/button";
 import Draggable from "./components/Draggable";
 import { Input } from "./components/ui/input";
+import SelectFont from "./components/SelectFont";
+import TitleInput from "./components/TitleInput";
 
 function App() {
   const imageRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const exportRef = useRef<HTMLAnchorElement>(null);
+
   const [isSubtitle, setIsSubtitle] = useState<boolean | "indeterminate">(true);
+
   const [titleSize, setTitleSize] = useState<number>(32);
-  const [subtitleSize, setSubtitleSize] = useState<number>(24);
   const [titleFont, setTitleFont] = useState<string>("SBAggroB");
   const [titleColor, setTitleColor] = useState<string>("#000000");
+
+  const [subtitleSize, setSubtitleSize] = useState<number>(24);
+  const [subtitleFont, setSubtitleFont] = useState<string>("SBAggroB");
   const [subtitleColor, setSubtitleColor] = useState<string>("#000000");
+
   const [bgColor, setBgColor] = useState<string>("#FFFFFF");
   const [images, setImages] = useState<
     { id: number; element: React.ReactElement }[]
   >([]);
+
   const [imageType, setImageType] = useState<string>("png");
 
   const handleClickExport = async () => {
@@ -85,20 +93,18 @@ function App() {
         className="col-span-2 w-[640px] h-[360px] m-auto border flex flex-col justify-center items-center overflow-hidden relative"
         style={{ backgroundColor: bgColor }}
       >
-        <input
-          className="w-full font-bold text-center focus:outline-none mb-2 bg-transparent"
+        <TitleInput
           placeholder="Title"
-          style={{
-            fontSize: `${titleSize}px`,
-            fontFamily: titleFont,
-            color: titleColor,
-          }}
+          size={titleSize}
+          font={titleFont}
+          color={titleColor}
         />
         {isSubtitle && (
-          <input
-            className="w-full font-normal text-center focus:outline-none bg-transparent"
+          <TitleInput
             placeholder="Subtitle"
-            style={{ fontSize: `${subtitleSize}px`, color: subtitleColor }}
+            size={subtitleSize}
+            font={subtitleFont}
+            color={subtitleColor}
           />
         )}
         {images.map((image) => image.element)}
@@ -118,30 +124,7 @@ function App() {
         </div>
         <div>
           <Label>font</Label>
-          <Select value={titleFont} onValueChange={setTitleFont}>
-            <SelectTrigger>
-              <SelectValue placeholder="어그로체" />
-            </SelectTrigger>
-            <SelectPortal>
-              <SelectContent>
-                <SelectItem value="SBAggroB" style={{ fontFamily: "SBAggroB" }}>
-                  어그로체
-                </SelectItem>
-                <SelectItem
-                  value="yg-jalnan"
-                  style={{ fontFamily: "yg-jalnan" }}
-                >
-                  여기어때 잘난체
-                </SelectItem>
-                <SelectItem
-                  value="JalnanGothic"
-                  style={{ fontFamily: "JalnanGothic" }}
-                >
-                  여기어때 잘난체 고딕
-                </SelectItem>
-              </SelectContent>
-            </SelectPortal>
-          </Select>
+          <SelectFont value={titleFont} onValueChange={setTitleFont} />
         </div>
         <div className="flex">
           <h3 className="text-lg font-semibold">Subtitle</h3>
@@ -162,6 +145,7 @@ function App() {
             step={1}
           />
         </div>
+        <SelectFont value={subtitleFont} onValueChange={setSubtitleFont} />
         <h3 className="text-lg font-semibold">Color</h3>
         <div>
           <Label>Title</Label>
@@ -219,5 +203,3 @@ function App() {
 }
 
 export default App;
-
-// 색상팔레트, 제목 글꼴, 소제목 글꼴, 소제목 유무, 글씨 크기, 이미지 삽입
